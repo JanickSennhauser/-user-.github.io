@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janick Sennhauser - Lebenslauf</title>
+    
+    <meta name="theme-color" content="#fbfbfd">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://unpkg.com">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        /* Apple System Fonts */
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        apple: {
+                            bg: '#fbfbfd',      
+                            card: '#f5f5f7',    
+                            text: '#1d1d1f',    
+                            grayText: '#86868b',
+                            green: '#34c759',    
+                            greenHover: '#248a3d'
+                        }
+                    },
+                    boxShadow: {
+                        'apple-hover': '0 20px 40px -10px rgba(0,0,0,0.12), 0 10px 20px -5px rgba(0,0,0,0.08)',
+                        'nav': '0 4px 24px rgba(0,0,0,0.04)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script defer src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #fbfbfd;
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* --- Animations --- */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: appleFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes appleFadeUp {
+            0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* Floating Animation for Header elements */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Experience Cards Interactive Hover (Legacy Fallback) */
+        .exp-card {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, box-shadow;
+        }
+
+        .exp-card:hover {
+            transform: scale(1.02) translateY(-5px);
+            background-color: #ffffff;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        /* Navigation Style */
+        .nav-indicator {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        ::selection {
+            background: rgba(52, 199, 89, 0.2);
+            color: #1d1d1f;
+        }
+
+        /* --- Flower Timeline Styles (Green Edition) --- */
+        #flower-container {
+            position: relative;
+            height: 1600px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .stem-wrapper {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stem-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            /* Grüner Stängel */
+            background: linear-gradient(to top, #0a2112, #10351d, #1f6b3b);
+            border-radius: 4px;
+            transition: height 4.5s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 0 15px rgba(31, 107, 59, 0.4);
+        }
+        
+        /* Blatt-Stiel (Verbindung zum Hauptstängel) */
+        .petiole {
+            position: absolute;
+            top: 35px;
+            width: 30px;
+            height: 4px;
+            background: #10351d;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s, width 0.8s;
+        }
+        .leaf-left .petiole { right: -30px; transform-origin: left center; }
+        .leaf-right .petiole { left: -30px; transform-origin: right center; }
+        .leaf-node.sprouted .petiole { opacity: 1; }
+
+        .leaf-node {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.4) translateY(30px);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: calc(100vw - 80px);
+            max-width: 320px;
+            z-index: 2;
+        }
+        .leaf-node.sprouted {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        
+        /* Die Karte im Normalzustand (Grünes Blatt) */
+        .leaf-card {
+            background: #10351d;
+            color: #f5f5f7;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #1a4d2e;
+        }
+        
+        /* Echte Blatt-Silhouette (Spitzes Ende, runder Bauch) */
+        .leaf-left .leaf-card { border-radius: 60px 4px 60px 4px; }
+        .leaf-right .leaf-card { border-radius: 4px 60px 4px 60px; }
+        
+        /* Mobile vs Desktop Layout */
+        @media (max-width: 767px) {
+            .leaf-left, .leaf-right { left: 4rem; right: auto; }
+            .stem-wrapper { left: 1.5rem; transform: none; }
+            /* Auf Mobile zeigen alle Blätter nach rechts */
+            .leaf-left .leaf-card, .leaf-right .leaf-card { border-radius: 4px 60px 4px 60px; }
+        }
+        @media (min-width: 768px) {
+            .leaf-left { right: calc(50% + 2.5rem); transform-origin: right center; }
+            .leaf-right { left: calc(50% + 2.5rem); transform-origin: left center; }
+            .stem-wrapper { left: 50%; transform: translateX(-50%); }
+        }
+
+        /* Hover-Effekt: Schwarzes Blatt entfaltet sich zur weißen Apple-Karte */
+        .leaf-card:hover {
+            border-radius: 24px !important;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            color: #1d1d1f;
+            border-color: rgba(0,0,0,0.05);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.15);
+            transform: scale(1.05) translateY(-5px);
+            z-index: 10;
+            max-width: 420px;
+        }
+        
+        /* Interne Farbwechsel beim Hover (Text, Icons, Badges) */
+        .leaf-icon-wrapper { transition: all 0.5s; background: #1a4d2e; border-color: #246b40; color: #fff; }
+        .leaf-card:hover .leaf-icon-wrapper { background: #f5f5f7; border-color: #eee; color: #1d1d1f; }
+        
+        .leaf-badge { transition: all 0.5s; background: #1a4d2e; color: #a3b8a8; }
+        .leaf-card:hover .leaf-badge { background: #eefdf4; color: #34c759; }
+
+        .leaf-title { transition: all 0.5s; color: #fff; }
+        .leaf-card:hover .leaf-title { color: #1d1d1f; }
+        
+        /* Versteckte Details, die ausfahren */
+        .leaf-details {
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .leaf-card:hover .leaf-details {
+            max-height: 400px;
+            opacity: 1;
+            margin-top: 1.25rem;
+            border-top: 1px solid rgba(0,0,0,0.08);
+            padding-top: 1.25rem;
+        }
+        
+        /* Die erblühende Sonnenblume an der Spitze */
+        .flower-bloom {
+            position: absolute;
+            top: -60px;
+            width: 120px;
+            height: 120px;
+            z-index: 5;
+        }
+        @media (max-width: 767px) {
+            .flower-bloom { left: 1.5rem; transform: translateX(-50%); }
+        }
+        @media (min-width: 768px) {
+            .flower-bloom { left: 50%; transform: translateX(-50%); }
+        }
+
+        /* Das dunkle Zentrum der Sonnenblume */
+        .sunflower-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 50px; height: 50px;
+            background: radial-gradient(circle, #4e342e, #271408);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 10;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 4px 10px rgba(0,0,0,0.3);
+        }
+        /* Sonnenblumen-Kern Textur (CSS Pattern) */
+        .sunflower-center::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; right: 4px; bottom: 4px;
+            border-radius: 50%;
+            background-image: radial-gradient(#5d4037 15%, transparent 16%), radial-gradient(#5d4037 15%, transparent 16%);
+            background-size: 6px 6px;
+            background-position: 0 0, 3px 3px;
+            opacity: 0.6;
+        }
+
+        .flower-bloom.bloomed .sunflower-center {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            transition-delay: 0.6s; /* Zentrum erscheint sanft nach den Blättern */
+        }
+
+        /* Blütenblätter (Petals) der Sonnenblume */
+        .sunflower-petal {
+            position: absolute;
+            top: 10px; /* Zentrum der Blume (60px) minus Höhe (50px) = 10px */
+            left: 50%;
+            width: 26px; 
+            height: 50px;
+            margin-left: -13px; /* Zentrierung: halbe Breite */
+            background: linear-gradient(to bottom, #ffeb3b, #ffb300);
+            border-radius: 50% 50% 20% 20%;
+            transform-origin: 50% 100%; /* Drehpunkt: Unten in der Mitte */
+            opacity: 0;
+            transform: scale(0) rotate(0deg);
+            transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Animation: Sonnenblume blüht auf (12 Petals rundherum) */
+        .flower-bloom.bloomed .petal-1 { opacity: 1; transform: rotate(0deg) scale(1); transition-delay: 0.0s;}
+        .flower-bloom.bloomed .petal-2 { opacity: 1; transform: rotate(30deg) scale(1); transition-delay: 0.05s;}
+        .flower-bloom.bloomed .petal-3 { opacity: 1; transform: rotate(60deg) scale(1); transition-delay: 0.1s;}
+        .flower-bloom.bloomed .petal-4 { opacity: 1; transform: rotate(90deg) scale(1); transition-delay: 0.15s;}
+        .flower-bloom.bloomed .petal-5 { opacity: 1; transform: rotate(120deg) scale(1); transition-delay: 0.2s;}
+        .flower-bloom.bloomed .petal-6 { opacity: 1; transform: rotate(150deg) scale(1); transition-delay: 0.25s;}
+        .flower-bloom.bloomed .petal-7 { opacity: 1; transform: rotate(180deg) scale(1); transition-delay: 0.3s;}
+        .flower-bloom.bloomed .petal-8 { opacity: 1; transform: rotate(210deg) scale(1); transition-delay: 0.35s;}
+        .flower-bloom.bloomed .petal-9 { opacity: 1; transform: rotate(240deg) scale(1); transition-delay: 0.4s;}
+        .flower-bloom.bloomed .petal-10 { opacity: 1; transform: rotate(270deg) scale(1); transition-delay: 0.45s;}
+        .flower-bloom.bloomed .petal-11 { opacity: 1; transform: rotate(300deg) scale(1); transition-delay: 0.5s;}
+        .flower-bloom.bloomed .petal-12 { opacity: 1; transform: rotate(330deg) scale(1); transition-delay: 0.55s;}
+    </style>
+</head>
+<body class="min-h-screen pb-24 relative">
+
+    <!-- Hero Background Image -->
+    <div class="absolute top-0 left-0 w-full h-[500px] z-[-1] overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80" 
+             class="w-full h-full object-cover opacity-[0.15] mix-blend-luminosity transform scale-105 origin-top animate-pulse" 
+             style="animation-duration: 10s;" alt="Background">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-apple-bg/80 to-apple-bg"></div>
+    </div>
+
+    <header class="pt-32 pb-16 px-6 max-w-5xl mx-auto text-center flex flex-col items-center reveal active">
+        <!-- Avatar -->
+        <div class="mb-8 relative group cursor-pointer animate-float">
+            <div class="absolute inset-0 bg-apple-green/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+            <img src="https://ui-avatars.com/api/?name=Janick+Sennhauser&background=1d1d1f&color=fff&size=256&font-size=0.33" 
+                 alt="Janick Sennhauser" 
+                 class="relative w-36 h-36 rounded-full border-4 border-white shadow-xl object-cover transform group-hover:scale-110 transition duration-500 ease-out">
+        </div>
+        
+        <h1 class="text-6xl md:text-8xl font-bold tracking-tight text-apple-text mb-4">
+            Janick Sennhauser.
+        </h1>
+        <p class="text-2xl md:text-4xl font-semibold text-apple-grayText tracking-tight reveal active reveal-delay-1">
+            "schlauer text"
+        </p>
+    </header>
+
+    <!-- Sticky Navigation -->
+    <div class="sticky top-6 z-50 flex justify-center w-full px-4 mb-16 pointer-events-none reveal active reveal-delay-2">
+        <nav class="pointer-events-auto bg-white/70 backdrop-blur-2xl border border-gray-200/50 p-1.5 rounded-full shadow-nav flex relative">
+            <button class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-green rounded-full" data-target="profil">
+                Profil & Info
+            </button>
+            <button class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-grayText hover:text-apple-green rounded-full" data-target="erfahrung">
+                Berufserfahrung
+            </button>
+            <button class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-grayText hover:text-apple-green rounded-full" data-target="ausbildung">
+                Ausbildung & Ref.
+            </button>
+            <div id="nav-pill" class="absolute top-1.5 left-1.5 bottom-1.5 bg-white shadow-md rounded-full nav-indicator z-0 border border-gray-100/50"></div>
+        </nav>
+    </div>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6">
+
+        <!-- ================= TAB 1: Profil ================= -->
+        <section id="profil" class="tab-content active">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Contact Card -->
+                <div class="bg-apple-card rounded-[2rem] p-8 md:col-span-1 flex flex-col justify-between group hover:bg-white hover:shadow-apple-hover transition-all duration-500 reveal">
+                    <div>
+                        <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                            <i data-lucide="contact" class="w-7 h-7 text-apple-text"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold tracking-tight mb-8">Kontakt.</h2>
+                        
+                        <ul class="space-y-6">
+                            <li class="transform group-hover:translate-x-2 transition-transform duration-300 delay-75">
+                                <span class="block text-xs font-bold text-apple-grayText uppercase tracking-wider mb-1">Adresse</span>
+                                <span class="font-medium text-lg">Mühlenstr. 3<br>9000 St. Gallen</span>
+                            </li>
+                            <li class="transform group-hover:translate-x-2 transition-transform duration-300 delay-100">
+                                <span class="block text-xs font-bold text-apple-grayText uppercase tracking-wider mb-1">Telefon</span>
+                                <span class="font-medium text-lg">079 124 62 42</span>
+                            </li>
+                            <li class="transform group-hover:translate-x-2 transition-transform duration-300 delay-150">
+                                <span class="block text-xs font-bold text-apple-grayText uppercase tracking-wider mb-1">E-Mail</span>
+                                <a href="mailto:Janick.Sennhauser@bluewin.ch" class="font-medium text-lg text-apple-green hover:text-apple-greenHover transition-colors break-all">Janick.Sennhauser@bluewin.ch</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Über mich -->
+                <div class="bg-white rounded-[2rem] p-8 md:col-span-2 shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-apple-hover transition-all duration-500 reveal reveal-delay-1">
+                    <!-- Subtle background decoration -->
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-apple-card rounded-full blur-3xl opacity-50 group-hover:bg-green-50 transition-colors duration-700"></div>
+                    
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-8 relative z-10">Über mich.</h2>
+                    <ul class="space-y-6 relative z-10">
+                        <li class="flex items-start group/item">
+                            <div class="w-10 h-10 rounded-full bg-apple-card flex items-center justify-center mr-5 shrink-0 group-hover/item:bg-black group-hover/item:text-white transition-colors duration-300 mt-1">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </div>
+                            <p class="text-xl font-medium text-apple-text leading-relaxed">
+                                Ich habe über 6 Jahre Erfahrung im <span class="font-bold">Wireline administrativen Bereich</span>.
+                            </p>
+                        </li>
+                        <li class="flex items-start group/item">
+                            <div class="w-10 h-10 rounded-full bg-apple-card flex items-center justify-center mr-5 shrink-0 group-hover/item:bg-black group-hover/item:text-white transition-colors duration-300 mt-1">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </div>
+                            <p class="text-xl font-medium text-apple-text leading-relaxed">
+                                Ich durfte meine Teammitglieder in diversen Fachthemen <span class="font-bold">erfolgreich unterstützen</span>.
+                            </p>
+                        </li>
+                        <li class="flex items-start group/item">
+                            <div class="w-10 h-10 rounded-full bg-apple-card flex items-center justify-center mr-5 shrink-0 group-hover/item:bg-black group-hover/item:text-white transition-colors duration-300 mt-1">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </div>
+                            <p class="text-xl font-medium text-apple-text leading-relaxed">
+                                Praktische Erfahrung in der Durchführung von <span class="font-bold">Coachings</span>.
+                            </p>
+                        </li>
+                        <li class="flex items-start group/item">
+                            <div class="w-10 h-10 rounded-full bg-apple-card flex items-center justify-center mr-5 shrink-0 group-hover/item:bg-black group-hover/item:text-white transition-colors duration-300 mt-1">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </div>
+                            <p class="text-xl font-medium text-apple-text leading-relaxed">
+                                Erste Anlaufstelle im Team und standortübergreifend für fachliche Auskünfte.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Das macht mich aus (Image Grid) -->
+                <div class="md:col-span-3 mt-6">
+                    <h2 class="text-3xl font-bold tracking-tight mb-6 reveal">Das macht mich aus.</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                        
+                        <!-- Card 1 -->
+                        <div class="relative bg-black rounded-[2rem] h-80 overflow-hidden group reveal">
+                            <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=600&q=80" alt="Fokus" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700">
+                            <div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                <i data-lucide="target" class="w-8 h-8 text-white mb-3 transform group-hover:-translate-y-2 transition-transform duration-500"></i>
+                                <h3 class="font-bold text-2xl text-white mb-2 tracking-tight">Fokussiert.</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">Auch bei langwierigen Themen verliere ich nie den Fokus.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="relative bg-black rounded-[2rem] h-80 overflow-hidden group reveal reveal-delay-1">
+                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80" alt="Objektiv" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700">
+                            <div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                <i data-lucide="scale" class="w-8 h-8 text-white mb-3 transform group-hover:-translate-y-2 transition-transform duration-500"></i>
+                                <h3 class="font-bold text-2xl text-white mb-2 tracking-tight">Objektiv.</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">Ich betrachte alles objektiv, nichts ist schwarz-weiss.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="relative bg-black rounded-[2rem] h-80 overflow-hidden group reveal reveal-delay-2">
+                            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80" alt="Hilfsbereit" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700">
+                            <div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                <i data-lucide="heart-handshake" class="w-8 h-8 text-white mb-3 transform group-hover:-translate-y-2 transition-transform duration-500"></i>
+                                <h3 class="font-bold text-2xl text-white mb-2 tracking-tight">Hilfsbereit.</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">Mitmenschen schätzen meine hilfsbereite und offene Art.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="relative bg-black rounded-[2rem] h-80 overflow-hidden group reveal reveal-delay-3">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80" alt="Neugierig" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700">
+                            <div class="absolute inset-0 p-6 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                                <i data-lucide="lightbulb" class="w-8 h-8 text-white mb-3 transform group-hover:-translate-y-2 transition-transform duration-500"></i>
+                                <h3 class="font-bold text-2xl text-white mb-2 tracking-tight">Neugierig.</h3>
+                                <p class="text-gray-300 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">Mich interessiert immer auch das ''Warum''.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: Berufserfahrung ================= -->
+        <section id="erfahrung" class="tab-content">
+            <div class="mb-8 reveal">
+                <h2 class="text-5xl md:text-6xl font-bold tracking-tight mb-4 text-center">Berufserfahrung</h2>
+                <div class="flex justify-between items-center text-xl text-apple-grayText">
+                    <span>Mein Werdegang</span>
+                    <span>Blatt für Blatt entfaltet.</span>
+                </div>
+            </div>
+
+            <!-- Interaktive Flower Timeline -->
+            <div id="flower-container" class="mt-48 mb-20">
+                
+                <!-- Schwarzer Stängel -->
+                <div class="stem-wrapper">
+                    <div id="stem-fill" class="stem-fill"></div>
+                </div>
+
+                <!-- Die Sonnenblume (Top) -->
+                <div id="flower-bloom" class="flower-bloom">
+                    <div class="sunflower-petal petal-1"></div>
+                    <div class="sunflower-petal petal-2"></div>
+                    <div class="sunflower-petal petal-3"></div>
+                    <div class="sunflower-petal petal-4"></div>
+                    <div class="sunflower-petal petal-5"></div>
+                    <div class="sunflower-petal petal-6"></div>
+                    <div class="sunflower-petal petal-7"></div>
+                    <div class="sunflower-petal petal-8"></div>
+                    <div class="sunflower-petal petal-9"></div>
+                    <div class="sunflower-petal petal-10"></div>
+                    <div class="sunflower-petal petal-11"></div>
+                    <div class="sunflower-petal petal-12"></div>
+                    <div class="sunflower-center"></div>
+                </div>
+
+                <!-- Leaves (Jobs von unten nach oben) -->
+                
+                <!-- Job 7 (Unten) -->
+                <div class="leaf-node leaf-right" style="bottom: 5%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border">
+                                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded">08/2009 – 08/2012</span>
+                                <h3 class="leaf-title font-bold text-lg leading-tight mt-1">Berufslehre Detailhandel</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">Do it & Garden Migros, Winterthur</p>
+                            <p class="text-apple-text text-sm leading-relaxed">Beratung, Verkauf und Bewirtschaftung im Detailhandel.</p>
+                            <img src="https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Retail">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 6 -->
+                <div class="leaf-node leaf-left" style="bottom: 19%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border">
+                                <i data-lucide="headset" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded">02/2013 – 02/2014</span>
+                                <h3 class="leaf-title font-bold text-lg leading-tight mt-1">Direct Marketing Center</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">Walterservices AG, Stettbach</p>
+                            <p class="text-apple-text text-sm leading-relaxed">Verkauf und Vertragsabwicklung im Auftrag der Swisscom Schweiz AG.</p>
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Call Center">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 5 -->
+                <div class="leaf-node leaf-right" style="bottom: 33%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border">
+                                <i data-lucide="sofa" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded">08/2014 – 08/2016</span>
+                                <h3 class="leaf-title font-bold text-lg leading-tight mt-1">Detailhandelsfachmann</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">LIPO Einrichtungsmärkte, Winterthur</p>
+                            <p class="text-apple-text text-sm leading-relaxed">Professionelle Beratung und Verkauf von Möbeln.</p>
+                            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Möbel">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 4 -->
+                <div class="leaf-node leaf-left" style="bottom: 47%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded">11/2016 – 10/2019</span>
+                                <h3 class="leaf-title font-bold text-lg leading-tight mt-1">Customer Care Generalist</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">Swisscom, St. Gallen</p>
+                            <p class="text-apple-text text-sm leading-relaxed">Administrative und technische Anliegen im Privatkundensegment gelöst.</p>
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Customer Care">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 3 -->
+                <div class="leaf-node leaf-right" style="bottom: 61%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border">
+                                <i data-lucide="award" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded">10/2019 – 09/2023</span>
+                                <h3 class="leaf-title font-bold text-lg leading-tight mt-1">Customer Care Specialist</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">Swisscom, St. Gallen</p>
+                            <p class="text-apple-text text-sm leading-relaxed">Bearbeitung von komplexen administrativen Anliegen im Privatkundensegment. Zusätzlich Mitglied im Service Advanced Team.</p>
+                            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Specialist">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="leaf-node leaf-left" style="bottom: 75%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border">
+                                <i data-lucide="life-buoy" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded">10/2023 – 04/2026</span>
+                                <h3 class="leaf-title font-bold text-lg leading-tight mt-1">Functional Support</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">Swisscom, St. Gallen</p>
+                            <p class="text-apple-text text-sm leading-relaxed">Fachlicher Support und Unterstützung des Teams bei komplexen Herausforderungen und Fragen.</p>
+                            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Functional Support">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job 1 (Ganz oben, unter der Blume) -->
+                <div class="leaf-node leaf-right" style="bottom: 89%;">
+                    <div class="petiole"></div>
+                    <div class="leaf-card group border-apple-green/30">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="leaf-icon-wrapper w-12 h-12 rounded-full flex items-center justify-center shrink-0 border bg-apple-green border-apple-green text-white shadow-md">
+                                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="leaf-badge text-xs font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-green-900/40 text-green-200">05/2026 – Heute</span>
+                                <h3 class="leaf-title font-bold text-xl leading-tight mt-1 text-apple-green">Training Specialist</h3>
+                            </div>
+                        </div>
+                        <div class="leaf-details">
+                            <p class="text-sm font-medium text-apple-grayText mb-2">Swisscom, St. Gallen</p>
+                            <p class="text-apple-text text-sm leading-relaxed font-medium">Aktuelle Position: Weitergabe von Fachwissen und Durchführung von zielgerichteten Coachings.</p>
+                            <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=400&q=80" class="w-full h-24 object-cover rounded-xl mt-4 shadow-sm" alt="Training">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: Ausbildung & Referenzen ================= -->
+        <section id="ausbildung" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Ausbildung Coaching -->
+                <div class="bg-white border border-gray-100 shadow-sm rounded-[2rem] p-8 reveal group hover:shadow-apple-hover transition-all duration-500 overflow-hidden relative">
+                    <!-- Decor Image behind text -->
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 opacity-5 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none">
+                        <i data-lucide="brain-circuit" class="w-full h-full text-apple-green"></i>
+                    </div>
+
+                    <h2 class="text-4xl font-bold tracking-tight mb-10">Ausbildung.</h2>
+                    
+                    <div class="mb-6 relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-3xl font-bold tracking-tight">Coaching</h3>
+                            <span class="bg-apple-card text-apple-text px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">2019</span>
+                        </div>
+                        <p class="text-lg text-apple-grayText mb-6">Die praktischen Grundlagen des systemischen Coachings:</p>
+                        
+                        <ul class="space-y-4">
+                            <li class="flex items-center text-apple-text font-medium text-lg group/list">
+                                <div class="w-2 h-2 bg-apple-green rounded-full mr-4 group-hover/list:scale-150 transition-transform"></div>
+                                Kompetenzorientierte Interventionstechniken
+                            </li>
+                            <li class="flex items-center text-apple-text font-medium text-lg group/list">
+                                <div class="w-2 h-2 bg-apple-green rounded-full mr-4 group-hover/list:scale-150 transition-transform"></div>
+                                Ressourcenorientierte Gesprächsführung
+                            </li>
+                            <li class="flex items-center text-apple-text font-medium text-lg group/list">
+                                <div class="w-2 h-2 bg-apple-green rounded-full mr-4 group-hover/list:scale-150 transition-transform"></div>
+                                Systemische Fragetechniken
+                            </li>
+                            <li class="flex items-center text-apple-text font-medium text-lg group/list">
+                                <div class="w-2 h-2 bg-apple-green rounded-full mr-4 group-hover/list:scale-150 transition-transform"></div>
+                                Wertschätzung & Achtsamkeit
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- EFZ und Referenzen -->
+                <div class="space-y-8 flex flex-col">
+                    <!-- Bild & EFZ Kombi -->
+                    <div class="relative rounded-[2rem] overflow-hidden h-64 group reveal reveal-delay-1 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80" alt="Ausbildung" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
+                            <span class="text-white/80 font-bold text-sm mb-1">08/2009 – 08/2012</span>
+                            <h3 class="text-2xl font-bold text-white tracking-tight">Detailhandelsfachmann EFZ</h3>
+                            <p class="text-white/90">Do it & Garden Migros</p>
+                        </div>
+                    </div>
+
+                    <!-- Referenzen -->
+                    <div class="bg-apple-card rounded-[2rem] p-8 reveal reveal-delay-2 flex-grow hover:bg-white hover:shadow-apple-hover transition-all duration-500">
+                        <h2 class="text-3xl font-bold tracking-tight mb-8">Referenzen.</h2>
+                        
+                        <div class="bg-white rounded-[1.5rem] p-6 shadow-sm flex items-center group/ref cursor-pointer hover:scale-105 transition-transform duration-300 border border-gray-100">
+                            <div class="w-16 h-16 bg-apple-card rounded-full flex items-center justify-center mr-6 group-hover/ref:bg-apple-green group-hover/ref:text-white transition-colors duration-300">
+                                <i data-lucide="user" class="w-7 h-7"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold tracking-tight">Astrid Lengweiler</h3>
+                                <p class="text-apple-grayText text-lg mt-1 group-hover/ref:text-apple-text transition-colors">Auf Anfrage verfügbar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Scroll Reveal Animation Logic ---
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        // Trigger once on load
+        setTimeout(reveal, 100);
+
+        // --- Apple Style Tab Logic ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const navPill = document.getElementById('nav-pill');
+
+        function updatePill(btn) {
+            const rect = btn.getBoundingClientRect();
+            const parentRect = btn.parentElement.getBoundingClientRect();
+            const left = rect.left - parentRect.left;
+            const width = rect.width;
+            
+            navPill.style.transform = `translateX(${left}px)`;
+            navPill.style.width = `${width}px`;
+        }
+
+        window.addEventListener('load', () => {
+            const activeBtn = document.querySelector('.tab-btn.text-apple-green');
+            if(activeBtn) updatePill(activeBtn);
+        });
+
+        window.addEventListener('resize', () => {
+            const activeBtn = document.querySelector('.tab-btn.text-apple-green');
+            if(activeBtn) {
+                navPill.style.transition = 'none';
+                updatePill(activeBtn);
+                setTimeout(() => navPill.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)', 50);
+            }
+        });
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                tabBtns.forEach(b => {
+                    b.classList.remove('text-apple-green');
+                    b.classList.add('text-apple-grayText');
+                });
+                btn.classList.remove('text-apple-grayText');
+                btn.classList.add('text-apple-green');
+
+                updatePill(btn);
+
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                const targetId = btn.getAttribute('data-target');
+                const targetContent = document.getElementById(targetId);
+                targetContent.classList.add('active');
+                
+                // Re-trigger reveal animations for new tab content
+                setTimeout(reveal, 50);
+
+                // --- Flower Animation Trigger ---
+                if(targetId === 'erfahrung') {
+                    startFlowerAnimation();
+                }
+            });
+        });
+
+        // --- Flower Timeline Animation Logic ---
+        function startFlowerAnimation() {
+            const container = document.getElementById('flower-container');
+            const stemFill = document.getElementById('stem-fill');
+            const leafNodes = document.querySelectorAll('.leaf-node');
+            const flowerBloom = document.getElementById('flower-bloom');
+            
+            if(!container) return;
+
+            // Reset States
+            stemFill.style.height = '0%';
+            flowerBloom.classList.remove('bloomed');
+            leafNodes.forEach(leaf => leaf.classList.remove('sprouted'));
+            
+            setTimeout(() => {
+                // 1. Lass den Stängel wachsen (4.5s)
+                stemFill.style.height = '100%';
+                
+                // 2. Lass die Blätter sprießen, abhängig von ihrer Höhe
+                leafNodes.forEach(leaf => {
+                    const bottomPercent = parseFloat(leaf.style.bottom);
+                    // 4500ms maximale Dauer, Blatt sprießt synchron zum Stängel
+                    const delay = (bottomPercent / 100) * 4500; 
+                    setTimeout(() => leaf.classList.add('sprouted'), delay);
+                });
+                
+                // 3. Sonnenblume an der Spitze erblühen lassen
+                setTimeout(() => {
+                    flowerBloom.classList.add('bloomed');
+                }, 4500);
+
+                // 4. "Das Bild folgt dieser" - Kamerafahrt von unten nach oben
+                const targetBottom = container.getBoundingClientRect().bottom + window.scrollY;
+                const sectionTop = document.getElementById('erfahrung').getBoundingClientRect().top + window.scrollY;
+                const targetTop = sectionTop - 120; // Stoppt exakt bei der Überschrift
+                
+                // Zuerst sofort ans untere Ende springen
+                window.scrollTo({ top: targetBottom - window.innerHeight + 150, behavior: 'auto' });
+                
+                // Kamerafahrt sanft nach oben starten
+                let startTime = null;
+                const scrollDuration = 4500; // Synchron mit dem Wachstum
+                const scrollStart = targetBottom - window.innerHeight + 150;
+                
+                function animateScroll(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const progress = Math.min(timeElapsed / scrollDuration, 1);
+                    
+                    // Bezier Easing für flüssiges Scrollen
+                    const easeOut = 1 - Math.pow(1 - progress, 3); 
+                    window.scrollTo(0, scrollStart - ((scrollStart - targetTop) * easeOut));
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateScroll);
+                    }
+                }
+                
+                setTimeout(() => requestAnimationFrame(animateScroll), 50);
+
+            }, 100);
+        }
+    </script>
+</body>
+</html>
