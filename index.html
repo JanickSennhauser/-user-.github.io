@@ -230,7 +230,8 @@
             opacity: 0;
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .leaf-card:hover .leaf-details {
+        .leaf-card:hover .leaf-details,
+        .leaf-card.open .leaf-details {
             max-height: 400px;
             opacity: 1;
             margin-top: 1.25rem;
@@ -346,13 +347,13 @@
     <!-- Sticky Navigation -->
     <div class="sticky top-6 z-50 flex justify-center w-full px-4 mb-16 pointer-events-none reveal active reveal-delay-2">
         <nav class="pointer-events-auto bg-white/70 backdrop-blur-2xl border border-gray-200/50 p-1.5 rounded-full shadow-nav flex relative">
-            <button class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-green rounded-full" data-target="profil">
+            <button type="button" class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-green rounded-full" data-target="profil">
                 Profil & Info
             </button>
-            <button class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-grayText hover:text-apple-green rounded-full" data-target="erfahrung">
+            <button type="button" class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-grayText hover:text-apple-green rounded-full" data-target="erfahrung">
                 Berufserfahrung
             </button>
-            <button class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-grayText hover:text-apple-green rounded-full" data-target="ausbildung">
+            <button type="button" class="tab-btn relative z-10 px-6 py-3 text-sm font-semibold transition-colors text-apple-grayText hover:text-apple-green rounded-full" data-target="ausbildung">
                 Ausbildung & Ref.
             </button>
             <div id="nav-pill" class="absolute top-1.5 left-1.5 bottom-1.5 bg-white shadow-md rounded-full nav-indicator z-0 border border-gray-100/50"></div>
@@ -795,6 +796,7 @@
 
         tabBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.preventDefault();
                 tabBtns.forEach(b => {
                     b.classList.remove('text-apple-green');
                     b.classList.add('text-apple-grayText');
@@ -810,7 +812,9 @@
 
                 const targetId = btn.getAttribute('data-target');
                 const targetContent = document.getElementById(targetId);
-                targetContent.classList.add('active');
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
                 
                 // Re-trigger reveal animations for new tab content
                 setTimeout(reveal, 50);
@@ -819,6 +823,13 @@
                 if(targetId === 'erfahrung') {
                     startFlowerAnimation();
                 }
+            });
+        });
+
+        // Touch / click fallback for leaf cards so details open on tap
+        document.querySelectorAll('.leaf-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('open');
             });
         });
 
